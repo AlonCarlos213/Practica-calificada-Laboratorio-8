@@ -60,4 +60,16 @@ app.MapGet("/api/ordenes/detalle", async (int orderId, LINQExampleContext db) =>
     .WithName("GetDetalleDeOrden")
     .WithOpenApi();
 
+app.MapGet("/api/ordenes/totalproductos", async (int orderId, LINQExampleContext db) =>
+    {
+        var total = await db.Orderdetails
+            .Where(d => d.Orderid == orderId)
+            .Select(d => d.Quantity)
+            .SumAsync();
+
+        return new { OrderId = orderId, CantidadTotal = total };
+    })
+    .WithName("GetCantidadTotalPorOrden")
+    .WithOpenApi();
+
 app.Run();
