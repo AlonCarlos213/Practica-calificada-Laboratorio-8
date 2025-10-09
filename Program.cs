@@ -32,6 +32,7 @@ app.MapGet("/api/clientes", async (string nombre, LINQExampleContext db) =>
     })
     .WithName("GetClientesPorNombre")
     .WithOpenApi();
+
 app.MapGet("/api/productos", async (decimal precio, LINQExampleContext db) =>
     {
         var productos = await db.Products
@@ -41,6 +42,22 @@ app.MapGet("/api/productos", async (decimal precio, LINQExampleContext db) =>
         return productos;
     })
     .WithName("GetProductosPorPrecio")
+    .WithOpenApi();
+
+app.MapGet("/api/ordenes/detalle", async (int orderId, LINQExampleContext db) =>
+    {
+        var detalles = await db.Orderdetails
+            .Where(d => d.Orderid == orderId)
+            .Select(d => new
+            {
+                NombreProducto = d.Product.Name,
+                Cantidad = d.Quantity
+            })
+            .ToListAsync();
+
+        return detalles;
+    })
+    .WithName("GetDetalleDeOrden")
     .WithOpenApi();
 
 app.Run();
