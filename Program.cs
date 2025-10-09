@@ -94,4 +94,26 @@ app.MapGet("/api/pedidos/fecha", async (DateTime fecha, LINQExampleContext db) =
     .WithName("GetPedidosPorFecha")
     .WithOpenApi();
 
+app.MapGet("/api/productos/promedio", async (LINQExampleContext db) =>
+    {
+        var promedio = await db.Products
+            .Select(p => p.Price)
+            .AverageAsync();
+
+        return Results.Ok(new { PromedioPrecio = promedio });
+    })
+    .WithName("GetPromedioPrecioProductos")
+    .WithOpenApi();
+
+app.MapGet("/api/productos/sindescripcion", async (LINQExampleContext db) =>
+    {
+        var productosSinDescripcion = await db.Products
+            .Where(p => p.Description == null || p.Description == "")
+            .ToListAsync();
+
+        return productosSinDescripcion;
+    })
+    .WithName("GetProductosSinDescripcion")
+    .WithOpenApi();
+
 app.Run();
