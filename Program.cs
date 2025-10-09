@@ -116,4 +116,47 @@ app.MapGet("/api/productos/sindescripcion", async (LINQExampleContext db) =>
     .WithName("GetProductosSinDescripcion")
     .WithOpenApi();
 
+app.MapGet("/api/clientes/mayorpedidos", async (LINQExampleContext db) =>
+    {
+        var clienteConMasPedidos = await db.Orders
+            .GroupBy(o => o.Clientid)
+            .Select(g => new
+            {
+                ClientId = g.Key,
+                CantidadPedidos = g.Count()
+            })
+            .OrderByDescending(c => c.CantidadPedidos)
+            .FirstOrDefaultAsync();
+
+        // Buscar el nombre del cliente
+        var cliente = await db.Clients
+            .Where(c => c.Clientid == clienteConMasPedidos.ClientId)
+            .Select(c => c.Name)
+            .FirstOrDefaultAsync();
+
+        return Results.Ok(new
+        {
+            Cliente = cliente,
+            TotalPedidos = clienteConMasPedidos.CantidadPedidos
+        });
+    })
+    .WithName("GetClienteConMasPedidos")
+    .WithOpenApi();
+app.MapGet("/api/pedidos/detalles", async (LINQExampleContext db) =>
+    {
+        var pedidosDetalles = await db.Orderdetails
+            .Select(od => new
+            {
+                od.Orderid,
+                Producto = od.Product.Name,
+                od.Quantity
+            })
+            .ToListAsync();
+
+        return Results.Ok(pedidosDetalles);
+    })
+    .WithName("GetPedidosConDetalles")
+    .WithOpenApi();
+
+
 app.Run();
