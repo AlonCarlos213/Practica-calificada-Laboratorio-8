@@ -72,4 +72,26 @@ app.MapGet("/api/ordenes/totalproductos", async (int orderId, LINQExampleContext
     .WithName("GetCantidadTotalPorOrden")
     .WithOpenApi();
 
+app.MapGet("/api/productos/mascaro", async (LINQExampleContext db) =>
+    {
+        var productoMasCaro = await db.Products
+            .OrderByDescending(p => p.Price)
+            .FirstOrDefaultAsync();
+
+        return productoMasCaro;
+    })
+    .WithName("GetProductoMasCaro")
+    .WithOpenApi();
+
+app.MapGet("/api/pedidos/fecha", async (DateTime fecha, LINQExampleContext db) =>
+    {
+        var pedidos = await db.Orders
+            .Where(o => o.Orderdate > fecha)
+            .ToListAsync();
+
+        return pedidos;
+    })
+    .WithName("GetPedidosPorFecha")
+    .WithOpenApi();
+
 app.Run();
