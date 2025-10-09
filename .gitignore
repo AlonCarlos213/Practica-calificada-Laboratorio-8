@@ -1,0 +1,4 @@
+# Ignorar configuraciones locales y credenciales
+appsettings.json
+appsettings.Development.json
+*.env

@@ -24,16 +24,25 @@ public partial class LINQExampleContext : DbContext
     public virtual DbSet<Product> Products { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=LINQExample;Username=postgres;Password=tu_contraseña");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            // La conexión se toma desde appsettings.json o desde variables de entorno
+            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
 
+            if (!string.IsNullOrEmpty(connectionString))
+            {
+                optionsBuilder.UseNpgsql(connectionString);
+            }
+        }
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Client>(entity =>
         {
             entity.HasKey(e => e.Clientid).HasName("clients_pkey");
 
-            entity.ToTable("clients");
+            entity.ToTable("cientsl");
 
             entity.Property(e => e.Clientid).HasColumnName("clientid");
             entity.Property(e => e.Email)
