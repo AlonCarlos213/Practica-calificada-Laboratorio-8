@@ -1,69 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Lab_8___Carlos_Mamani.Models;
 
 public partial class LINQExampleContext : DbContext
 {
-    public LINQExampleContext()
-    {
-    }
+    public LINQExampleContext() { }
 
     public LINQExampleContext(DbContextOptions<LINQExampleContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public virtual DbSet<Client> Clients { get; set; }
-
     public virtual DbSet<Order> Orders { get; set; }
-
     public virtual DbSet<Orderdetail> Orderdetails { get; set; }
-
     public virtual DbSet<Product> Products { get; set; }
 
+    // Fallback opcional (si no se configuró por DI)
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
         {
-            // La conexión se toma desde appsettings.json o desde variables de entorno
             var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
-
-            if (!string.IsNullOrEmpty(connectionString))
+            if (!string.IsNullOrWhiteSpace(connectionString))
             {
                 optionsBuilder.UseNpgsql(connectionString);
             }
         }
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Client>(entity =>
         {
             entity.HasKey(e => e.Clientid).HasName("clients_pkey");
-
-            entity.ToTable("cientsl");
-
+            entity.ToTable("clients");                 // <- corregido
             entity.Property(e => e.Clientid).HasColumnName("clientid");
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .HasColumnName("email");
-            entity.Property(e => e.Name)
-                .HasMaxLength(100)
-                .HasColumnName("name");
+            entity.Property(e => e.Email).HasMaxLength(100).HasColumnName("email");
+            entity.Property(e => e.Name).HasMaxLength(100).HasColumnName("name");
         });
 
         modelBuilder.Entity<Order>(entity =>
         {
             entity.HasKey(e => e.Orderid).HasName("orders_pkey");
-
             entity.ToTable("orders");
-
             entity.Property(e => e.Orderid).HasColumnName("orderid");
             entity.Property(e => e.Clientid).HasColumnName("clientid");
             entity.Property(e => e.Orderdate)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("orderdate");
+                  .HasColumnType("timestamp without time zone")
+                  .HasColumnName("orderdate");
 
             entity.HasOne(d => d.Client).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.Clientid)
@@ -74,9 +57,7 @@ public partial class LINQExampleContext : DbContext
         modelBuilder.Entity<Orderdetail>(entity =>
         {
             entity.HasKey(e => e.Orderdetailid).HasName("orderdetails_pkey");
-
             entity.ToTable("orderdetails");
-
             entity.Property(e => e.Orderdetailid).HasColumnName("orderdetailid");
             entity.Property(e => e.Orderid).HasColumnName("orderid");
             entity.Property(e => e.Productid).HasColumnName("productid");
@@ -96,19 +77,11 @@ public partial class LINQExampleContext : DbContext
         modelBuilder.Entity<Product>(entity =>
         {
             entity.HasKey(e => e.Productid).HasName("products_pkey");
-
             entity.ToTable("products");
-
             entity.Property(e => e.Productid).HasColumnName("productid");
-            entity.Property(e => e.Description)
-                .HasMaxLength(100)
-                .HasColumnName("description");
-            entity.Property(e => e.Name)
-                .HasMaxLength(100)
-                .HasColumnName("name");
-            entity.Property(e => e.Price)
-                .HasPrecision(10, 2)
-                .HasColumnName("price");
+            entity.Property(e => e.Description).HasMaxLength(100).HasColumnName("description");
+            entity.Property(e => e.Name).HasMaxLength(100).HasColumnName("name");
+            entity.Property(e => e.Price).HasPrecision(10, 2).HasColumnName("price");
         });
 
         OnModelCreatingPartial(modelBuilder);

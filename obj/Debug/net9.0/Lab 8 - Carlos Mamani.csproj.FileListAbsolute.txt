@@ -132,3 +132,5 @@
 /Users/carlosalonsomamaniccollque/Desktop/ProyectosRide/Lab 8 - Carlos Mamani/Lab 8 - Carlos Mamani/obj/Debug/net9.0/Lab 8 - Carlos Mamani.pdb
 /Users/carlosalonsomamaniccollque/Desktop/ProyectosRide/Lab 8 - Carlos Mamani/Lab 8 - Carlos Mamani/obj/Debug/net9.0/Lab 8 - Carlos Mamani.genruntimeconfig.cache
 /Users/carlosalonsomamaniccollque/Desktop/ProyectosRide/Lab 8 - Carlos Mamani/Lab 8 - Carlos Mamani/obj/Debug/net9.0/ref/Lab 8 - Carlos Mamani.dll
+/Users/carlosalonsomamaniccollque/Desktop/ProyectosRide/Lab 8 - Carlos Mamani/Lab 8 - Carlos Mamani/bin/Debug/net9.0/AutoMapper.dll
+/Users/carlosalonsomamaniccollque/Desktop/ProyectosRide/Lab 8 - Carlos Mamani/Lab 8 - Carlos Mamani/bin/Debug/net9.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll
